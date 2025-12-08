@@ -217,7 +217,7 @@ const experiences = [
 .experience-item p {
     text-align: center;
     font-size: 1.5rem;
-    font-weight: 200;
+    font-weight: 500;
     color: rgba(255, 255, 255, 0.9);
     margin: 0;
     line-height: 1.6;
@@ -407,13 +407,11 @@ const experiences = [
     color: rgba(255, 255, 255, 0.9);
     margin: 0;
     animation: fadeInUp 0.8s ease 0.6s both;
-    text-align: justify;
 }
 
 .description-content {
-    text-align: justify;
     font-size: 1.1rem;
-    font-weight: 200;
+    font-weight: 400;
 }
 
 .about-section {

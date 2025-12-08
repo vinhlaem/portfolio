@@ -274,7 +274,7 @@ h2 {
 }
 
 .card-body {
-  padding: 0 18px 18px;
+  padding: 10px 18px 18px;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -327,11 +327,6 @@ h2 {
 @media (max-width: 600px) {
   .section {
     padding: 60px 1rem;
-  }
-
-  .controls {
-    width: 100%;
-    justify-content: space-between;
   }
 
   .category-group,

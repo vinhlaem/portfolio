@@ -242,7 +242,6 @@ h3 {
   .pill-group {
     flex-wrap: wrap;
     width: 100%;
-    justify-content: space-between;
   }
 }
 </style>
