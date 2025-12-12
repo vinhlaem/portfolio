@@ -21,7 +21,11 @@
       </nav>
 
       <!-- Mobile Menu Button -->
-      <button class="menu-toggle" @click="toggleDrawer" aria-label="Toggle menu">
+      <button
+        class="menu-toggle"
+        @click="toggleDrawer"
+        aria-label="Toggle menu"
+      >
         <span class="hamburger" :class="{ active: drawerOpen }">
           <span></span>
           <span></span>
@@ -31,11 +35,19 @@
     </div>
 
     <!-- Mobile Drawer Sidebar -->
-    <div class="drawer-overlay" :class="{ active: drawerOpen }" @click="closeDrawer"></div>
+    <div
+      class="drawer-overlay"
+      :class="{ active: drawerOpen }"
+      @click="closeDrawer"
+    ></div>
     <aside class="drawer" :class="{ active: drawerOpen }">
       <div class="drawer-header">
         <img src="/logo.png" alt="Logo" class="drawer-logo" />
-        <button class="drawer-close" @click="closeDrawer" aria-label="Close menu">
+        <button
+          class="drawer-close"
+          @click="closeDrawer"
+          aria-label="Close menu"
+        >
           ✕
         </button>
       </div>
@@ -56,79 +68,79 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted } from "vue";
 
-const drawerOpen = ref(false)
-const activeSection = ref('home')
-const isScrolled = ref(false)
+const drawerOpen = ref(false);
+const activeSection = ref("home");
+const isScrolled = ref(false);
 
 const navLinks = [
-  { id: 'home', label: 'Home' },
-  { id: 'about', label: 'About me' },
-  { id: 'portfolio', label: 'Portfolio' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'contact', label: 'Contact' }
-]
+  { id: "home", label: "Home" },
+  { id: "about", label: "About me" },
+  { id: "portfolio", label: "Portfolio" },
+  { id: "skills", label: "Skills" },
+  { id: "contact", label: "Contact" },
+];
 
 const scrollToSection = (sectionId) => {
-  const element = document.getElementById(sectionId)
+  const element = document.getElementById(sectionId);
   if (element) {
-    const offset = 80 // Header height offset
-    const elementPosition = element.getBoundingClientRect().top
-    const offsetPosition = elementPosition + window.pageYOffset - offset
+    const offset = 80; // Header height offset
+    const elementPosition = element.getBoundingClientRect().top;
+    const offsetPosition = elementPosition + window.pageYOffset - offset;
 
     window.scrollTo({
       top: offsetPosition,
-      behavior: 'smooth'
-    })
+      behavior: "smooth",
+    });
   }
-}
+};
 
 const handleDrawerLinkClick = (sectionId) => {
-  scrollToSection(sectionId)
-  closeDrawer()
-}
+  scrollToSection(sectionId);
+  closeDrawer();
+};
 
 const toggleDrawer = () => {
-  drawerOpen.value = !drawerOpen.value
-  document.body.style.overflow = drawerOpen.value ? 'hidden' : ''
-}
+  drawerOpen.value = !drawerOpen.value;
+  document.body.style.overflow = drawerOpen.value ? "hidden" : "";
+};
 
 const closeDrawer = () => {
-  drawerOpen.value = false
-  document.body.style.overflow = ''
-}
+  drawerOpen.value = false;
+  document.body.style.overflow = "";
+};
 
 const updateActiveSection = () => {
-  const sections = navLinks.map(link => link.id)
-  const scrollPosition = window.pageYOffset + 100
+  const sections = navLinks.map((link) => link.id);
+  const scrollPosition = window.pageYOffset + 200;
 
   for (let i = sections.length - 1; i >= 0; i--) {
-    const section = document.getElementById(sections[i])
+    const section = document.getElementById(sections[i]);
     if (section && section.offsetTop <= scrollPosition) {
-      activeSection.value = sections[i]
-      break
+      activeSection.value = sections[i];
+      break;
     }
   }
-}
+};
 
 const handleScroll = () => {
   // Update active section
-  updateActiveSection()
-  
+  updateActiveSection();
+
   // Update scroll state for background
-  isScrolled.value = window.scrollY > 50
-}
+  isScrolled.value = window.scrollY > 50;
+};
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll, { passive: true })
-  handleScroll()
-})
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
+});
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-  document.body.style.overflow = ''
-})
+  window.removeEventListener("scroll", handleScroll);
+  document.body.style.overflow = "";
+});
 </script>
 
 <style scoped>
@@ -142,7 +154,8 @@ onUnmounted(() => {
   z-index: 100000000;
   box-shadow: none;
   border-bottom: 1px solid transparent;
-  transition: background 0.3s ease, box-shadow 0.3s ease, border-bottom-color 0.3s ease;
+  transition: background 0.3s ease, box-shadow 0.3s ease,
+    border-bottom-color 0.3s ease;
 }
 
 .header.scrolled {
@@ -197,7 +210,7 @@ onUnmounted(() => {
 }
 
 .nav-link.active::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: 0;
   left: 0;
