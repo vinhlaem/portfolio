@@ -1,20 +1,20 @@
 <script setup>
 const experiences = [
-    {
-        title: 'Graduated',
-        experience: 'Graduated in <br/> <b>2023</b>',
-        icon: '/icons/graduated.svg',
-    },
-    {
-        title: 'Developer',
-        experience: '3 years as a <br/> <b>Front End Developer</b>',
-        icon: '/icons/developer.svg',
-    },
-    {
-        title: 'Fullstack Developer',
-        experience: 'Early 2025 - Present: as a <br/> <b>Fullstack Developer</b>',
-        icon: '/icons/fullstack.svg',
-    },
+  {
+    title: 'IT Graduate',
+    experience: 'Bachelor of Information Technology <br/> <b>Class of 2023</b>',
+    icon: '/icons/graduated.svg',
+  },
+  {
+    title: 'Full-Stack Developer',
+    experience: '<b>4+ years</b> of professional experience <br/> building web applications',
+    icon: '/icons/developer.svg',
+  },
+  {
+    title: 'Tech Stack',
+    experience: '<b>React, Next.js, Node.js, NestJS</b> <br/> PostgreSQL, MongoDB, TypeScript',
+    icon: '/icons/fullstack.svg',
+  },
 ]
 </script>
 
