@@ -1,5 +1,23 @@
 <script setup>
-const experiences = [
+import { computed } from 'vue'
+
+const CAREER_START_YEAR = 2022
+const CAREER_START_MONTH = 5 // June, zero-based month index
+
+const experienceYears = computed(() => {
+  const now = new Date()
+  let years = now.getFullYear() - CAREER_START_YEAR
+
+  if (now.getMonth() < CAREER_START_MONTH) {
+    years -= 1
+  }
+
+  return Math.max(years, 0)
+})
+
+const experienceYearsLabel = computed(() => `${experienceYears.value}+ years`)
+
+const experiences = computed(() => [
   {
     title: 'IT Graduate',
     experience: 'Bachelor of Information Technology <br/> <b>Class of 2023</b>',
@@ -7,7 +25,7 @@ const experiences = [
   },
   {
     title: 'Full-Stack Developer',
-    experience: '<b>4+ years</b> of professional experience <br/> building web applications',
+    experience: `<b>${experienceYearsLabel.value}</b> of professional experience <br/> building web applications`,
     icon: '/icons/developer.svg',
   },
   {
@@ -15,7 +33,7 @@ const experiences = [
     experience: '<b>React, Next.js, Node.js, NestJS</b> <br/> PostgreSQL, MongoDB, TypeScript',
     icon: '/icons/fullstack.svg',
   },
-]
+])
 </script>
 
 <template>
@@ -72,7 +90,7 @@ const experiences = [
 
                     <!-- Professional Introduction -->
                     <p class="about-description">
-                        I'm a Front-End Developer with 3 years of experience building responsive, user-friendly, and
+                        I'm a Front-End Developer with {{ experienceYearsLabel }} of experience building responsive, user-friendly, and
                         performance-optimized web applications. I work primarily with modern front-end technologies and
                         have hands-on knowledge of backend development, including the ability to design and implement
                         CRUD APIs when needed. I'm looking for opportunities in a dynamic and professional environment
