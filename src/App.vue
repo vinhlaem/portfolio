@@ -40,7 +40,7 @@ const loadSection = (id) => {
 onMounted(() => {
   backgroundTimer = window.setTimeout(() => {
     showBackground.value = true;
-  }, 3000);
+  }, 500);
 
   if (!("IntersectionObserver" in window)) {
     lazySections.forEach(loadSection);
