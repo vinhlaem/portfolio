@@ -1,6 +1,5 @@
 <script setup>
 import { reactive, ref, computed } from "vue";
-import emailjs from "@emailjs/browser";
 
 const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || "";
 const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "";
@@ -61,6 +60,8 @@ const sendEmail = async () => {
 
   sending.value = true;
   try {
+    const { default: emailjs } = await import("@emailjs/browser");
+
     await emailjs.send(
       SERVICE_ID,
       TEMPLATE_ID,
@@ -303,7 +304,7 @@ const sendEmail = async () => {
   max-width: 1400px;
   margin: 0 auto 28px;
   position: relative;
-  z-index: 9999999;
+  z-index: 2;
 }
 
 .eyebrow {
@@ -340,14 +341,14 @@ h2 {
   align-items: start;
   backdrop-filter: blur(10px);
   position: relative;
-  z-index: 9999999;
+  z-index: 2;
 }
 
 .form {
   display: grid;
   gap: 14px;
   position: relative;
-  z-index: 9999999;
+  z-index: 2;
   width: 50%;
   background: rgba(0, 0, 0, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.06);

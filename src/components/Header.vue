@@ -3,7 +3,17 @@
     <div class="header-container">
       <!-- Logo -->
       <div class="logo-wrapper">
-        <img src="/logo.png" alt="Logo" class="logo" />
+        <img
+          src="/optimized/logo-160.png"
+          srcset="/optimized/logo-96.png 96w, /optimized/logo-160.png 160w"
+          sizes="60px"
+          alt="Logo"
+          class="logo"
+          width="160"
+          height="160"
+          decoding="async"
+          fetchpriority="low"
+        />
       </div>
 
       <!-- Desktop Navigation -->
@@ -42,7 +52,15 @@
     ></div>
     <aside class="drawer" :class="{ active: drawerOpen }">
       <div class="drawer-header">
-        <img src="/logo.png" alt="Logo" class="drawer-logo" />
+        <img
+          src="/optimized/logo-96.png"
+          alt="Logo"
+          class="drawer-logo"
+          width="96"
+          height="96"
+          loading="lazy"
+          decoding="async"
+        />
         <button
           class="drawer-close"
           @click="closeDrawer"
@@ -73,6 +91,12 @@ import { ref, onMounted, onUnmounted } from "vue";
 const drawerOpen = ref(false);
 const activeSection = ref("home");
 const isScrolled = ref(false);
+let scrollFrame = null;
+let sectionObserver = null;
+let observerRefreshTimeout = null;
+let mutationObserver = null;
+let trackingTimer = null;
+const observedSections = new Set();
 
 const navLinks = [
   { id: "home", label: "Home" },
@@ -111,33 +135,80 @@ const closeDrawer = () => {
   document.body.style.overflow = "";
 };
 
-const updateActiveSection = () => {
-  const sections = navLinks.map((link) => link.id);
-  const scrollPosition = window.pageYOffset + 200;
+const handleScroll = () => {
+  if (scrollFrame) return;
 
-  for (let i = sections.length - 1; i >= 0; i--) {
-    const section = document.getElementById(sections[i]);
-    if (section && section.offsetTop <= scrollPosition) {
-      activeSection.value = sections[i];
-      break;
+  scrollFrame = window.requestAnimationFrame(() => {
+    isScrolled.value = window.scrollY > 50;
+    scrollFrame = null;
+  });
+};
+
+const observeSections = () => {
+  if (!sectionObserver) return;
+
+  navLinks.forEach((link) => {
+    const section = document.getElementById(link.id);
+    if (section && !observedSections.has(link.id)) {
+      sectionObserver.observe(section);
+      observedSections.add(link.id);
     }
+  });
+
+  if (observedSections.size === navLinks.length) {
+    mutationObserver?.disconnect();
+    mutationObserver = null;
   }
 };
 
-const handleScroll = () => {
-  // Update active section
-  updateActiveSection();
+const setupSectionTracking = () => {
+  sectionObserver = new IntersectionObserver(
+    (entries) => {
+      const visibleEntry = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
-  // Update scroll state for background
-  isScrolled.value = window.scrollY > 50;
+      if (visibleEntry?.target?.id) {
+        activeSection.value = visibleEntry.target.id;
+      }
+    },
+    {
+      rootMargin: "-30% 0px -55% 0px",
+      threshold: [0, 0.25, 0.5, 0.75],
+    }
+  );
+
+  observeSections();
+  observerRefreshTimeout = window.setTimeout(observeSections, 1500);
+  mutationObserver = new MutationObserver(observeSections);
+  const appRoot = document.getElementById("app");
+  if (appRoot) {
+    mutationObserver.observe(appRoot, {
+      childList: true,
+      subtree: true,
+    });
+  }
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
 };
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll, { passive: true });
-  handleScroll();
+  trackingTimer = window.setTimeout(setupSectionTracking, 5000);
 });
 
 onUnmounted(() => {
+  if (trackingTimer) {
+    window.clearTimeout(trackingTimer);
+  }
+  if (scrollFrame) {
+    window.cancelAnimationFrame(scrollFrame);
+  }
+  if (observerRefreshTimeout) {
+    window.clearTimeout(observerRefreshTimeout);
+  }
+  mutationObserver?.disconnect();
+  sectionObserver?.disconnect();
   window.removeEventListener("scroll", handleScroll);
   document.body.style.overflow = "";
 });
@@ -150,8 +221,8 @@ onUnmounted(() => {
   left: 0;
   right: 0;
   background: transparent;
-  backdrop-filter: blur(10px);
-  z-index: 100000000;
+  backdrop-filter: none;
+  z-index: 1000;
   box-shadow: none;
   border-bottom: 1px solid transparent;
   transition: background 0.3s ease, box-shadow 0.3s ease,
@@ -160,6 +231,7 @@ onUnmounted(() => {
 
 .header.scrolled {
   background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }

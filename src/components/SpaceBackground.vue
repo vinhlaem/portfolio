@@ -70,12 +70,19 @@ const canvasWidth = ref(window.innerWidth)
 const canvasHeight = ref(window.innerHeight)
 
 let animationFrame = null
-let lastTime = 0
+let resizeFrame = null
+let lastFrameTime = 0
+let lastGlowDraw = 0
+let glowCtx = null
+let starsCtx = null
 let stars = []
 let glowBlobs = []
 let previousWidth = window.innerWidth
 let previousHeight = window.innerHeight
-const glowBlobCount = 4
+const glowBlobCount = 3
+const targetFrameMs = 1000 / 30
+const glowFrameMs = 500
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
 // Initialize glow blobs (nebula effect)
 const initGlowBlobs = () => {
@@ -164,8 +171,10 @@ const drawGlowBlobs = (ctx, currentTime) => {
     ctx.fill()
     
     // Update position
-    blob.x += blob.vx
-    blob.y += blob.vy
+    if (!prefersReducedMotion.matches) {
+      blob.x += blob.vx
+      blob.y += blob.vy
+    }
     
     // Wrap around edges
     if (blob.x < -blob.radius) blob.x = canvasWidth.value + blob.radius
@@ -182,8 +191,10 @@ const drawStars = (ctx, currentTime) => {
   
   stars.forEach(star => {
     // Update position based on layer (parallax effect)
-    star.x += star.vx
-    star.y += star.vy
+    if (!prefersReducedMotion.matches) {
+      star.x += star.vx
+      star.y += star.vy
+    }
     
     // Wrap around edges
     if (star.x < -star.size) {
@@ -204,7 +215,7 @@ const drawStars = (ctx, currentTime) => {
     
     // Twinkling effect
     let opacity = star.baseOpacity
-    if (props.enableTwinkling) {
+    if (props.enableTwinkling && !prefersReducedMotion.matches) {
       const twinkle = Math.sin(currentTime * props.twinkleSpeed + star.twinklePhase) * 0.5 + 0.5
       opacity = star.baseOpacity * (0.6 + twinkle * 0.4)
     }
@@ -229,29 +240,43 @@ const drawStars = (ctx, currentTime) => {
 
 // Main animation loop
 const animate = (currentTime) => {
-  const glowCanvas = glowCanvasRef.value
-  const starsCanvas = starsCanvasRef.value
-  
-  if (!glowCanvas || !starsCanvas) return
-  
-  const glowCtx = glowCanvas.getContext('2d')
-  const starsCtx = starsCanvas.getContext('2d')
-  
-  // Initialize lastTime
-  if (!lastTime) lastTime = currentTime
-  
-  // Draw glow blobs (nebula) on blurred canvas
-  drawGlowBlobs(glowCtx, currentTime)
-  
-  // Draw stars on sharp canvas (no blur)
+  if (!glowCtx || !starsCtx) return
+
+  if (document.hidden) {
+    animationFrame = requestAnimationFrame(animate)
+    return
+  }
+
+  if (currentTime - lastFrameTime < targetFrameMs) {
+    animationFrame = requestAnimationFrame(animate)
+    return
+  }
+
+  lastFrameTime = currentTime
+
+  if (currentTime - lastGlowDraw > glowFrameMs) {
+    drawGlowBlobs(glowCtx, currentTime)
+    lastGlowDraw = currentTime
+  }
+
   drawStars(starsCtx, currentTime)
-  
-  lastTime = currentTime
+
+  if (prefersReducedMotion.matches) return
+
   animationFrame = requestAnimationFrame(animate)
 }
 
 // Handle window resize
 const handleResize = () => {
+  if (resizeFrame) return
+
+  resizeFrame = requestAnimationFrame(() => {
+    resizeFrame = null
+    resizeCanvas()
+  })
+}
+
+const resizeCanvas = () => {
   const newWidth = window.innerWidth
   const newHeight = window.innerHeight
   
@@ -353,21 +378,26 @@ onMounted(() => {
   starsCanvas.height = canvasHeight.value
   
   // Optimize canvas rendering
-  const glowCtx = glowCanvas.getContext('2d')
-  const starsCtx = starsCanvas.getContext('2d')
+  glowCtx = glowCanvas.getContext('2d', { alpha: true })
+  starsCtx = starsCanvas.getContext('2d', { alpha: true })
   
   glowCtx.imageSmoothingEnabled = true
-  glowCtx.imageSmoothingQuality = 'high'
+  glowCtx.imageSmoothingQuality = 'low'
   starsCtx.imageSmoothingEnabled = true
-  starsCtx.imageSmoothingQuality = 'high'
+  starsCtx.imageSmoothingQuality = 'low'
   
   // Initialize
   initGlowBlobs()
   initStars()
   
   // Start animation
-  lastTime = performance.now()
-  animate(lastTime)
+  lastFrameTime = performance.now()
+  drawGlowBlobs(glowCtx, lastFrameTime)
+  drawStars(starsCtx, lastFrameTime)
+
+  if (!prefersReducedMotion.matches) {
+    animationFrame = requestAnimationFrame(animate)
+  }
   
   // Listen for resize
   window.addEventListener('resize', handleResize, { passive: true })
@@ -376,6 +406,9 @@ onMounted(() => {
 onUnmounted(() => {
   if (animationFrame) {
     cancelAnimationFrame(animationFrame)
+  }
+  if (resizeFrame) {
+    cancelAnimationFrame(resizeFrame)
   }
   window.removeEventListener('resize', handleResize)
 })
@@ -388,8 +421,9 @@ onUnmounted(() => {
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 10000;
+  z-index: 0;
   pointer-events: none;
+  contain: strict;
 }
 
 .glow-layer {
@@ -400,6 +434,7 @@ onUnmounted(() => {
   height: 100vh;
   opacity: 0.95;
   mix-blend-mode: screen;
+  will-change: opacity;
 }
 
 .stars-layer {
@@ -409,5 +444,6 @@ onUnmounted(() => {
   width: 100vw;
   height: 100vh;
   opacity: 1;
+  will-change: contents;
 }
 </style>

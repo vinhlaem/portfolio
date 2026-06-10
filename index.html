@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" href="/optimized/favicon-32.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Vinh Truong | Fullstack Developer Portfolio</title>
@@ -15,29 +15,67 @@
       content="Vinh Truong, fullstack developer, frontend, React, Next.js, Vue, Node.js, portfolio"
     />
     <meta name="author" content="Vinh Truong" />
+    <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#0b0c12" />
-    <!-- Replace with your production URL -->
-    <link rel="canonical" href="https://example.com/" />
+    <link
+      rel="preload"
+      as="image"
+      href="/optimized/avatar-480.jpg"
+      imagesrcset="/optimized/avatar-320.jpg 320w, /optimized/avatar-480.jpg 480w, /optimized/avatar-754.jpg 754w"
+      imagesizes="(max-width: 480px) 230px, (max-width: 768px) 270px, (max-width: 1024px) 360px, 400px"
+      fetchpriority="high"
+    />
+    <link rel="canonical" href="https://portfolio-vinhlaem.vercel.app" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Vinh Truong | Fullstack Developer Portfolio" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content="https://portfolio-vinhlaem.vercel.app" />
+    <meta property="og:site_name" content="Vinh Truong Portfolio" />
+    <meta
+      property="og:title"
+      content="Vinh Truong | Fullstack Developer Portfolio"
+    />
     <meta
       property="og:description"
-      content="Building responsive, user-friendly products with modern web stacks."
+      content="Portfolio of Vinh Truong, a fullstack developer building responsive web products with React, Next.js, Vue, and Node.js."
     />
-    <meta property="og:image" content="/avatar.png" />
-    <meta property="og:url" content="https://example.com/" />
-    <meta property="og:site_name" content="Vinh Truong Portfolio" />
+    <meta
+      property="og:image"
+      content="https://portfolio-vinhlaem.vercel.app/og-image.jpg"
+    />
+    <meta
+      property="og:image:secure_url"
+      content="https://portfolio-vinhlaem.vercel.app/og-image.jpg"
+    />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Vinh Truong fullstack developer portfolio preview"
+    />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Vinh Truong | Fullstack Developer Portfolio" />
+    <meta name="twitter:domain" content="portfolio-vinhlaem.vercel.app" />
+    <meta name="twitter:url" content="https://portfolio-vinhlaem.vercel.app" />
+    <meta
+      name="twitter:title"
+      content="Vinh Truong | Fullstack Developer Portfolio"
+    />
     <meta
       name="twitter:description"
-      content="Building responsive, user-friendly products with modern web stacks."
+      content="Portfolio of Vinh Truong, a fullstack developer building responsive web products with React, Next.js, Vue, and Node.js."
     />
-    <meta name="twitter:image" content="/avatar.png" />
+    <meta
+      name="twitter:image"
+      content="https://portfolio-vinhlaem.vercel.app/og-image.jpg"
+    />
+    <meta
+      name="twitter:image:alt"
+      content="Vinh Truong fullstack developer portfolio preview"
+    />
   </head>
   <body>
     <div id="app"></div>

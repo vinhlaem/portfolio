@@ -16,7 +16,7 @@ const projects = [
     summary: 'This is a wedding website for me',
     badges: ['Online', 'VueJS', "NodeJS", 'Typescript', 'JavaScript', 'MongoDB'],
     category: 'web',
-    image: '/projects/wedding.png',
+    image: '/optimized/projects/wedding-640.jpg',
     url: 'https://wedding-rose-iota.vercel.app/',
   },
   {
@@ -24,7 +24,7 @@ const projects = [
     summary: 'The platform is an e-commerce site specializing in MagSafe accessories, featuring product search, rich category browsing, and order tracking.',
     badges: ['Online', 'Next.js',  'Typescript', 'Fabric', 'Bootstrap', 'SCSS', 'NodeJs', 'Postgresql'],
     category: 'web',
-    image: '/projects/crewn.png',
+    image: '/optimized/projects/crewn-640.jpg',
     url: 'https://crewn.vercel.app/',
   },
   {
@@ -32,14 +32,14 @@ const projects = [
     summary: ' Build a mobile app that integrates information about coin prices and user can trading in this app, utilizing the same API as the web version.',
     badges: ['Online',  'React native', 'API Rest', 'NestJs', 'Postgresql', 'TypeScript'],
     category: 'app',
-    image: '/projects/dex-app.png',
+    image: '/optimized/projects/dex-app-420.jpg',
   },
   {
     title: 'Meme warrior space',
     summary: 'Build a website for users to create their own memes and push them to the spaces they have joined to participate in the events of that space, and also mint the memes in that space',
     badges: ['Online', 'Next.js', 'Typescript', 'React Query', 'Rainbownkit', 'Wagmi', 'FabricJs'],
     category: 'web',
-    image: '/projects/meme.ws.png',
+    image: '/optimized/projects/meme-ws-640.jpg',
     url: "https://meme.ws/"
   },
   {
@@ -47,7 +47,7 @@ const projects = [
     summary: 'Build a website that integrates information about coin prices and user can trading in this website',
     badges: ['NextJs', 'Rainbownkit', 'Wagmi', 'NestJs', 'Postgresql', 'TypeScript', 'React Query',],
     category: 'web',
-    image: '/projects/dex.web.png',
+    image: '/optimized/projects/dex-web-640.jpg',
     url: 'https://dex.fm/',
   },
   {
@@ -55,7 +55,7 @@ const projects = [
     summary: ' Build a website that integrates information about coin prices',
     badges: ['NextJs', 'SCSS', 'NestJs', 'Postgresql'],
     category: 'web',
-    image: '/projects/coins.png',
+    image: '/optimized/projects/coins-640.jpg',
     url: 'https://coins.plus/',
   },
   {
@@ -117,7 +117,15 @@ const filteredProjects = computed(() => {
         class="card"
         @click="openProject(project.url)"
       >
-        <div class="card-media" :style="{ backgroundImage: project.image ? `url(${project.image})` : '' }">
+        <div class="card-media">
+          <img
+            v-if="project.image"
+            :src="project.image"
+            :alt="project.title"
+            loading="lazy"
+            decoding="async"
+            sizes="(max-width: 960px) 100vw, 320px"
+          />
           <div v-if="!project.image" class="media-fallback">{{ project.title }}</div>
         </div>
         <div class="card-body">
@@ -149,7 +157,7 @@ const filteredProjects = computed(() => {
   gap: 1.5rem;
   flex-wrap: wrap;
   position: relative;
-  z-index: 9999999;
+  z-index: 2;
 }
 
 .eyebrow {
@@ -224,7 +232,7 @@ h2 {
 .card {
   background: rgba(0,0,0, 0.5);
   position: relative;
-  z-index: 9999999;
+  z-index: 2;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 18px;
   overflow: hidden;
@@ -233,6 +241,7 @@ h2 {
 
   gap: 12px;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .projects.row .card {
@@ -249,16 +258,27 @@ h2 {
 .card-media {
   width: 100%;
   min-height: 180px;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   position: relative;
+  overflow: hidden;
+}
+
+.card-media img {
+  display: block;
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  object-position: center;
 }
 
 .projects.row .card-media {
   width: 320px;
   min-height: 200px;
   flex-shrink: 0;
+}
+
+.projects.row .card-media img {
+  height: 100%;
+  min-height: 200px;
 }
 
 .media-fallback {
@@ -333,6 +353,17 @@ h2 {
   .view-toggle {
     width: 100%;
     justify-content: space-between;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill,
+  .card {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
   }
 }
 </style>

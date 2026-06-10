@@ -7,7 +7,7 @@
         <p class="banner-profession">FullStack developer</p>
         <div class="banner-description">
           <span class="typing-text">{{ displayedText }}</span>
-          <span class="cursor" :class="{ blinking: showCursor }">|</span>
+          <span class="cursor">|</span>
         </div>
         <div class="banner-social-links">
           <a href="https://github.com/vinhlaem" target="_blank">
@@ -133,7 +133,17 @@
 
         <!-- Avatar image -->
         <div class="avatar-image-wrapper">
-          <img src="/avatar.png" alt="Avatar" class="avatar-image" />
+          <img
+            src="/optimized/avatar-480.jpg"
+            srcset="/optimized/avatar-320.jpg 320w, /optimized/avatar-480.jpg 480w, /optimized/avatar-754.jpg 754w"
+            sizes="(max-width: 480px) 230px, (max-width: 768px) 270px, (max-width: 1024px) 360px, 400px"
+            alt="Avatar"
+            class="avatar-image"
+            width="754"
+            height="552"
+            decoding="async"
+            fetchpriority="high"
+          />
         </div>
 
         <!-- Floating tech icons -->
@@ -273,11 +283,11 @@
         </div>
 
         <div class="tech-icon tech-icon-nodejs">
-          <img src="/node.png" />
+          <img src="/node.png" alt="Node.js" loading="lazy" decoding="async" />
         </div>
 
         <div class="tech-icon tech-icon-nestjs">
-          <img src="/nestjs.png" />
+          <img src="/nestjs.png" alt="NestJS" loading="lazy" decoding="async" />
         </div>
       </div>
     </div>
@@ -310,11 +320,12 @@ const props = defineProps({
   },
 });
 
-const displayedText = ref("");
-const showCursor = ref(true);
+const displayedText = ref(props.texts[0] || "");
 const currentTextIndex = ref(0);
 const isDeleting = ref(false);
 let typingInterval = null;
+let typingTimeout = null;
+let typingStartTimeout = null;
 
 const typeText = () => {
   const currentText = props.texts[currentTextIndex.value];
@@ -329,7 +340,7 @@ const typeText = () => {
     } else {
       // Finished typing, wait then start deleting
       clearInterval(typingInterval);
-      setTimeout(() => {
+      typingTimeout = setTimeout(() => {
         isDeleting.value = true;
         startTyping();
       }, props.pauseTime);
@@ -348,7 +359,7 @@ const typeText = () => {
       currentTextIndex.value =
         (currentTextIndex.value + 1) % props.texts.length;
       clearInterval(typingInterval);
-      setTimeout(() => {
+      typingTimeout = setTimeout(() => {
         startTyping();
       }, 300);
       return;
@@ -357,22 +368,26 @@ const typeText = () => {
 };
 
 const startTyping = () => {
+  clearInterval(typingInterval);
   const speed = isDeleting.value ? props.deletingSpeed : props.typingSpeed;
   typingInterval = setInterval(typeText, speed);
 };
 
 onMounted(() => {
-  startTyping();
-
-  // Cursor blinking animation
-  setInterval(() => {
-    showCursor.value = !showCursor.value;
-  }, 530);
+  typingStartTimeout = window.setTimeout(() => {
+    startTyping();
+  }, 2500);
 });
 
 onUnmounted(() => {
   if (typingInterval) {
     clearInterval(typingInterval);
+  }
+  if (typingTimeout) {
+    clearTimeout(typingTimeout);
+  }
+  if (typingStartTimeout) {
+    clearTimeout(typingStartTimeout);
   }
 });
 </script>
@@ -382,10 +397,24 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
   padding: 120px 2rem 4rem;
-  background: #000000;
+  background: transparent;
   position: relative;
   overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .banner::before,
+  .banner-greeting,
+  .banner-name,
+  .banner-profession,
+  .banner-description,
+  .avatar-halo,
+  .tech-icon,
+  .cursor {
+    animation: none;
+  }
 }
 
 .banner::before {
@@ -418,7 +447,7 @@ onUnmounted(() => {
   background-repeat: repeat;
   background-size: 150% 150%;
   opacity: 0.4;
-  animation: twinkle 25s linear infinite;
+  animation: none;
   pointer-events: none;
 }
 
@@ -457,7 +486,7 @@ onUnmounted(() => {
   font-weight: 400;
   margin-bottom: 1rem;
   opacity: 0.9;
-  animation: fadeInUp 0.6s ease;
+  animation: none;
 }
 
 .banner-name {
@@ -469,7 +498,7 @@ onUnmounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: fadeInUp 0.8s ease 0.2s both;
+  animation: none;
 }
 
 .banner-profession {
@@ -477,7 +506,7 @@ onUnmounted(() => {
   margin-bottom: 2rem;
   opacity: 0.8;
   font-weight: 300;
-  animation: fadeInUp 1s ease 0.4s both;
+  animation: none;
 }
 
 .banner-description {
@@ -486,7 +515,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  animation: fadeInUp 1.2s ease 0.6s both;
+  animation: none;
 }
 
 .banner-social-links {
@@ -506,7 +535,7 @@ onUnmounted(() => {
 
 .banner-avatar {
   position: relative;
-  z-index: 9999999;
+  z-index: 2;
   flex-shrink: 0;
   width: 500px;
   height: 500px;
@@ -531,8 +560,8 @@ onUnmounted(() => {
     rgba(139, 92, 246, 0.1) 70%,
     transparent 100%
   );
-  filter: blur(40px);
-  animation: pulse 3s ease-in-out infinite;
+  filter: blur(24px);
+  animation: none;
   z-index: 0;
 }
 
@@ -574,13 +603,12 @@ onUnmounted(() => {
   width: 60px;
   height: 60px;
   background: rgba(139, 92, 246, 0.15);
-  backdrop-filter: blur(10px);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid rgba(139, 92, 246, 0.3);
-  animation: float 6s ease-in-out infinite;
+  animation: none;
 }
 
 .tech-icon svg {
@@ -664,7 +692,7 @@ onUnmounted(() => {
 .cursor {
   color: #ffffff;
   font-weight: 300;
-  animation: blink 1s infinite;
+  animation: none;
 }
 
 .cursor.blinking {

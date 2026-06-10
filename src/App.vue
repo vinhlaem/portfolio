@@ -1,36 +1,130 @@
 <script setup>
-import Header from './components/Header.vue'
-import Banner from './components/Banner.vue'
-import SpaceBackground from './components/SpaceBackground.vue'
-import About from './components/About.vue'
-import Portfolio from './components/Portfolio.vue'
-import Skills from './components/Skills.vue'
-import Contact from './components/Contact.vue'
+import {
+  defineAsyncComponent,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+} from "vue";
+import Header from "./components/Header.vue";
+import Banner from "./components/Banner.vue";
+
+const SpaceBackground = defineAsyncComponent(
+  () => import("./components/SpaceBackground.vue"),
+);
+const About = defineAsyncComponent(() => import("./components/About.vue"));
+const Portfolio = defineAsyncComponent(
+  () => import("./components/Portfolio.vue"),
+);
+const Skills = defineAsyncComponent(() => import("./components/Skills.vue"));
+const Contact = defineAsyncComponent(() => import("./components/Contact.vue"));
+
+const lazySections = ["about", "portfolio", "skills", "contact"];
+const loadedSections = reactive({
+  about: false,
+  portfolio: false,
+  skills: false,
+  contact: false,
+});
+
+let sectionObserver = null;
+let backgroundTimer = null;
+const showBackground = ref(false);
+
+const loadSection = (id) => {
+  if (id in loadedSections) {
+    loadedSections[id] = true;
+  }
+};
+
+onMounted(() => {
+  backgroundTimer = window.setTimeout(() => {
+    showBackground.value = true;
+  }, 3000);
+
+  if (!("IntersectionObserver" in window)) {
+    lazySections.forEach(loadSection);
+    return;
+  }
+
+  sectionObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        const id = entry.target.id;
+        loadSection(id);
+        sectionObserver?.unobserve(entry.target);
+      });
+    },
+    {
+      rootMargin: "0px 0px",
+      threshold: 0.01,
+    },
+  );
+
+  lazySections.forEach((id) => {
+    const section = document.getElementById(id);
+    if (section) sectionObserver.observe(section);
+  });
+});
+
+onUnmounted(() => {
+  if (backgroundTimer) {
+    window.clearTimeout(backgroundTimer);
+  }
+  sectionObserver?.disconnect();
+});
 </script>
 
 <template>
   <div class="app">
     <!-- Space Background with Multi-layer Parallax Stars -->
-    <SpaceBackground 
-      :star-count="[60, 50, 40]"
-      :star-speed="[0.8, 0.5, 0.3]"
+    <SpaceBackground
+      v-if="showBackground"
+      :star-count="[18, 14]"
+      :star-speed="[0.25, 0.14]"
       :star-size="[2.0, 1.5, 1.2]"
-      :glow-intensity="0.4"
-      :blur-amount="100"
+      :glow-intensity="0.18"
+      :blur-amount="32"
       :enable-twinkling="true"
     />
-    
+
     <Header />
     <Banner />
-    
+
     <!-- Sections for navigation -->
-    <About/>
+    <About v-if="loadedSections.about" />
+    <section
+      v-else
+      id="about"
+      class="lazy-section-placeholder"
+      aria-label="About section"
+    ></section>
 
-    <Portfolio/>
+    <Portfolio v-if="loadedSections.portfolio" />
+    <section
+      v-else
+      id="portfolio"
+      class="lazy-section-placeholder"
+      aria-label="Portfolio section"
+    ></section>
 
-    <Skills/>
+    <Skills v-if="loadedSections.skills" />
+    <section
+      v-else
+      id="skills"
+      class="lazy-section-placeholder"
+      aria-label="Skills section"
+    ></section>
 
-    <Contact/>
+    <Contact v-if="loadedSections.contact" />
+    <section
+      v-else
+      id="contact"
+      class="lazy-section-placeholder"
+      aria-label="Contact section"
+    ></section>
   </div>
 </template>
 
@@ -76,12 +170,17 @@ html {
   min-height: 100vh;
   background: #000000;
   color: white;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
   position: relative;
 }
 
-
-
+.lazy-section-placeholder {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
 
 .section-content {
   max-width: 1400px;

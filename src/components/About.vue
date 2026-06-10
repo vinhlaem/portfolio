@@ -31,7 +31,7 @@ const experiences = [
 
                 <!-- Content -->
                 <div class="item-content">
-                    <img :src="item.icon" alt="icon" class="experience-icon">
+                    <img :src="item.icon" alt="icon" class="experience-icon" loading="lazy" decoding="async">
                     <p v-html="item.experience"></p>
                 </div>
             </div>
@@ -43,7 +43,17 @@ const experiences = [
                 <div class="profile-picture-wrapper">
                     <div class="profile-halo"></div>
                     <div class="profile-image-container">
-                        <img src="/avatar.png" alt="Profile" class="profile-image">
+                        <img
+                            src="/optimized/avatar-480.jpg"
+                            srcset="/optimized/avatar-320.jpg 320w, /optimized/avatar-480.jpg 480w, /optimized/avatar-754.jpg 754w"
+                            sizes="(max-width: 480px) 250px, (max-width: 768px) 280px, (max-width: 1024px) 350px, 400px"
+                            alt="Profile"
+                            class="profile-image"
+                            width="754"
+                            height="552"
+                            loading="lazy"
+                            decoding="async"
+                        >
                     </div>
                 </div>
 
@@ -111,7 +121,7 @@ const experiences = [
     text-align: center;
     margin-bottom: 3rem;
     position: relative;
-    z-index: 9999999;
+    z-index: 2;
 
 }
 
@@ -126,7 +136,7 @@ const experiences = [
 .experience {
     display: flex;
     position: relative;
-    z-index: 9999999;
+    z-index: 2;
 
     gap: 3rem;
     justify-content: center;
@@ -139,7 +149,7 @@ const experiences = [
 .experience-item {
     min-width: 305px;
     position: relative;
-    z-index: 9999999;
+    z-index: 2;
     animation: fadeInUp 0.8s ease both;
 }
 
@@ -154,7 +164,7 @@ const experiences = [
     background: radial-gradient(circle, rgba(139, 92, 246, 0.6) 0%, rgba(139, 92, 246, 0.4) 40%, rgba(139, 92, 246, 0.1) 70%, transparent 100%);
     filter: blur(40px);
     animation: pulse 3s ease-in-out infinite;
-    z-index: 9999999;
+    z-index: 2;
     pointer-events: none;
 }
 
@@ -174,7 +184,7 @@ const experiences = [
 
 .item-content {
     position: relative;
-    z-index: 9999999;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -302,7 +312,7 @@ const experiences = [
     margin-right: auto;
     padding: 0 2rem;
     position: relative;
-    z-index: 9999999;
+    z-index: 2;
 }
 
 .about-container {
@@ -340,7 +350,7 @@ const experiences = [
 
 .profile-image-container {
     position: relative;
-    z-index: 9999999;
+    z-index: 2;
     width: 400px;
     height: 400px;
     border-radius: 50%;
@@ -543,6 +553,25 @@ const experiences = [
 
     .about-name {
         font-size: 2rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section-content h2,
+    .experience-item,
+    .item-halo,
+    .profile-halo,
+    .about-text-content,
+    .about-name,
+    .about-description,
+    .about-section {
+        animation: none;
+    }
+
+    .item-content,
+    .experience-icon,
+    .about-button {
+        transition: none;
     }
 }
 </style>

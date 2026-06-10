@@ -93,7 +93,7 @@ const filteredSkills = computed(() => {
   gap: 1.5rem;
   flex-wrap: wrap;
   position: relative;
-  z-index: 9999999;
+  z-index: 2;
 }
 
 .eyebrow {
@@ -170,7 +170,7 @@ h2 {
   gap: 10px;
   transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   position: relative;
-  z-index: 9999999;
+  z-index: 2;
 }
 
 .card:hover {
