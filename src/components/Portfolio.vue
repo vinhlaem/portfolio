@@ -1,83 +1,149 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref } from "vue";
 
-const viewMode = ref('grid') // 'grid' | 'row'
-const activeCategory = ref('all')
+const viewMode = ref("grid"); // 'grid' | 'row'
+const activeCategory = ref("all");
 
 const openProject = (url) => {
-  if(url){
-    window.open(url, '_blank')
+  if (url) {
+    window.open(url, "_blank");
   }
-}
+};
 
 const projects = [
   {
-    title: 'Wedding',
-    summary: 'This is a wedding website for me',
-    badges: ['Online', 'VueJS', "NodeJS", 'Typescript', 'JavaScript', 'MongoDB'],
-    category: 'web',
-    image: '/optimized/projects/wedding-640.jpg',
-    url: 'https://wedding-rose-iota.vercel.app/',
+    title: "Viet Trip AI",
+    summary:
+      "An AI-powered Vietnam travel planner that builds personalized itineraries with destination suggestions, weather context, saved trips, and shareable public trip links.",
+    badges: [
+      "Online",
+      "Next.js",
+      "TypeScript",
+      "Firebase",
+      "AI Planner",
+      "SCSS",
+    ],
+    category: "web",
+    image: "/optimized/projects/viet-trip-640.jpg",
+    url: "https://viet-trip-ai.vercel.app",
   },
   {
-    title: 'Crewn',
-    summary: 'The platform is an e-commerce site specializing in MagSafe accessories, featuring product search, rich category browsing, and order tracking.',
-    badges: ['Online', 'Next.js',  'Typescript', 'Fabric', 'Bootstrap', 'SCSS', 'NodeJs', 'Postgresql'],
-    category: 'web',
-    image: '/optimized/projects/crewn-640.jpg',
-    url: 'https://crewn.vercel.app/',
+    title: "Wedding",
+    summary: "This is a wedding website for me",
+    badges: [
+      "Online",
+      "VueJS",
+      "NodeJS",
+      "Typescript",
+      "JavaScript",
+      "MongoDB",
+    ],
+    category: "web",
+    image: "/optimized/projects/wedding-640.jpg",
+    url: "https://wedding-vinh-nguyet.vercel.app/",
   },
   {
-    title: 'DexFM - Mobile App',
-    summary: ' Build a mobile app that integrates information about coin prices and user can trading in this app, utilizing the same API as the web version.',
-    badges: ['Online',  'React native', 'API Rest', 'NestJs', 'Postgresql', 'TypeScript'],
-    category: 'app',
-    image: '/optimized/projects/dex-app-420.jpg',
+    title: "Crewn",
+    summary:
+      "The platform is an e-commerce site specializing in MagSafe accessories, featuring product search, rich category browsing, and order tracking.",
+    badges: [
+      "Online",
+      "Next.js",
+      "Typescript",
+      "Fabric",
+      "Bootstrap",
+      "SCSS",
+      "NodeJs",
+      "Postgresql",
+    ],
+    category: "web",
+    image: "/optimized/projects/crewn-640.jpg",
+    url: "https://crewn.vercel.app/",
   },
   {
-    title: 'Meme warrior space',
-    summary: 'Build a website for users to create their own memes and push them to the spaces they have joined to participate in the events of that space, and also mint the memes in that space',
-    badges: ['Online', 'Next.js', 'Typescript', 'React Query', 'Rainbownkit', 'Wagmi', 'FabricJs'],
-    category: 'web',
-    image: '/optimized/projects/meme-ws-640.jpg',
-    url: "https://meme.ws/"
+    title: "DexFM - Mobile App",
+    summary:
+      " Build a mobile app that integrates information about coin prices and user can trading in this app, utilizing the same API as the web version.",
+    badges: [
+      "Online",
+      "React native",
+      "API Rest",
+      "NestJs",
+      "Postgresql",
+      "TypeScript",
+    ],
+    category: "app",
+    image: "/optimized/projects/dex-app-420.jpg",
   },
   {
-    title: 'DexFM - Web',
-    summary: 'Build a website that integrates information about coin prices and user can trading in this website',
-    badges: ['NextJs', 'Rainbownkit', 'Wagmi', 'NestJs', 'Postgresql', 'TypeScript', 'React Query',],
-    category: 'web',
-    image: '/optimized/projects/dex-web-640.jpg',
-    url: 'https://dex.fm/',
+    title: "Meme warrior space",
+    summary:
+      "Build a website for users to create their own memes and push them to the spaces they have joined to participate in the events of that space, and also mint the memes in that space",
+    badges: [
+      "Online",
+      "Next.js",
+      "Typescript",
+      "React Query",
+      "Rainbownkit",
+      "Wagmi",
+      "FabricJs",
+    ],
+    category: "web",
+    image: "/optimized/projects/meme-ws-640.jpg",
+    url: "https://meme.ws/",
   },
   {
-    title: 'Coin+',
-    summary: ' Build a website that integrates information about coin prices',
-    badges: ['NextJs', 'SCSS', 'NestJs', 'Postgresql'],
-    category: 'web',
-    image: '/optimized/projects/coins-640.jpg',
-    url: 'https://coins.plus/',
+    title: "DexFM - Web",
+    summary:
+      "Build a website that integrates information about coin prices and user can trading in this website",
+    badges: [
+      "NextJs",
+      "Rainbownkit",
+      "Wagmi",
+      "NestJs",
+      "Postgresql",
+      "TypeScript",
+      "React Query",
+    ],
+    category: "web",
+    image: "/optimized/projects/dex-web-640.jpg",
+    url: "https://dex.fm/",
   },
   {
-    title: 'Trainsay - Telegram App',
-    summary: 'Trainsay is a Telegram app where users record their voice based on provided text. Admin scores the recordings, and during the airdrop, the scores are converted into project tokens.',
-    badges: ['ReactJs', 'NodeJs', 'MongoDB','TypeScript', 'Scss', 'JavaScript'],
-    category: 'web',
+    title: "Coin+",
+    summary: " Build a website that integrates information about coin prices",
+    badges: ["NextJs", "SCSS", "NestJs", "Postgresql"],
+    category: "web",
+    image: "/optimized/projects/coins-640.jpg",
+    url: "https://coins.plus/",
   },
   {
-    title: 'POPOY',
-    summary: 'Build an introduction website for the POPOY coin development project',
-    badges: ['NextJs', 'Connectkit', 'Wagmi'],
-    category: 'web',
+    title: "Trainsay - Telegram App",
+    summary:
+      "Trainsay is a Telegram app where users record their voice based on provided text. Admin scores the recordings, and during the airdrop, the scores are converted into project tokens.",
+    badges: [
+      "ReactJs",
+      "NodeJs",
+      "MongoDB",
+      "TypeScript",
+      "Scss",
+      "JavaScript",
+    ],
+    category: "web",
   },
-
-  
-]
+  {
+    title: "POPOY",
+    summary:
+      "Build an introduction website for the POPOY coin development project",
+    badges: ["NextJs", "Connectkit", "Wagmi"],
+    category: "web",
+  },
+];
 
 const filteredProjects = computed(() => {
-  if (activeCategory.value === 'all') return projects
-  return projects.filter(p => p.category === activeCategory.value)
-})
+  if (activeCategory.value === "all") return projects;
+  return projects.filter((p) => p.category === activeCategory.value);
+});
 </script>
 
 <template>
@@ -88,7 +154,6 @@ const filteredProjects = computed(() => {
         <h2>Works and projects</h2>
       </div>
       <div class="controls">
-      
         <div class="view-toggle">
           <button
             class="pill"
@@ -126,7 +191,9 @@ const filteredProjects = computed(() => {
             decoding="async"
             sizes="(max-width: 960px) 100vw, 320px"
           />
-          <div v-if="!project.image" class="media-fallback">{{ project.title }}</div>
+          <div v-if="!project.image" class="media-fallback">
+            {{ project.title }}
+          </div>
         </div>
         <div class="card-body">
           <h3>{{ project.title }}</h3>
@@ -230,7 +297,7 @@ h2 {
 }
 
 .card {
-  background: rgba(0,0,0, 0.5);
+  background: rgba(0, 0, 0, 0.5);
   position: relative;
   z-index: 2;
   border: 1px solid rgba(255, 255, 255, 0.06);
@@ -240,7 +307,10 @@ h2 {
   flex-direction: column;
 
   gap: 12px;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
 }
 
@@ -286,9 +356,18 @@ h2 {
   height: 100%;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle at 20% 20%, rgba(109, 75, 255, 0.35), transparent 35%),
-              radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.15), transparent 40%),
-              #12141c;
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(109, 75, 255, 0.35),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 30%,
+      rgba(255, 255, 255, 0.15),
+      transparent 40%
+    ),
+    #12141c;
   color: #fff;
   font-weight: 700;
 }
